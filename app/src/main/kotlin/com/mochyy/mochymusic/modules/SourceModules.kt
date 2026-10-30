@@ -19,6 +19,7 @@ import com.mochyy.mochymusic.module.SourceStream
 import com.mochyy.mochymusic.module.TrackQuery
 import com.mochyy.mochymusic.module.applemusic.AppleMusicModule
 import com.mochyy.mochymusic.module.monochrome.MonochromeModule
+import com.mochyy.mochymusic.module.subsonic.SubsonicModule
 import com.mochyy.mochymusic.constants.EnableMonochromeBackendKey
 import com.mochyy.mochymusic.utils.dataStore
 import com.mochyy.mochymusic.utils.get
@@ -72,7 +73,7 @@ class SourceModules @Inject constructor(
     }
 
     private val modules: List<Pair<SourceModule, String?>> by lazy {
-        val builtIn = listOf<SourceModule>(AppleMusicModule(), MonochromeModule()).map { it to null as String? }
+        val builtIn = listOf<SourceModule>(SubsonicModule(), AppleMusicModule(), MonochromeModule()).map { it to null as String? }
         val installed = discover()
         val ids = installed.map { it.first.info.id }.toSet()
         migrateMonochromeSwitch()
@@ -269,7 +270,7 @@ class SourceModules @Inject constructor(
         const val ModuleAction = "com.mochyy.mochymusic.SOURCE_MODULE"
         /** YouTube Music in the provider order: not a module, and needs no account */
         const val YouTubeId = "youtube"
-        private val KnownOrder = listOf(MonochromeModule.Id, AppleMusicModule.Id, YouTubeId)
+        private val KnownOrder = listOf(SubsonicModule.Id, MonochromeModule.Id, AppleMusicModule.Id, YouTubeId)
         const val EntryMetaKey = "com.mochyy.mochymusic.module.entry"
     }
 }

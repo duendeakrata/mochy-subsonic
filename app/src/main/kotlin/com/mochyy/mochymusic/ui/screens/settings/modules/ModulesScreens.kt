@@ -198,6 +198,12 @@ fun ModuleScreen(navController: NavController, id: String, viewModel: ModulesVie
             Spacer(Modifier.height(16.dp))
         }
 
+        if (id == "subsonic") {
+            LabSectionLabel("Server account")
+            SubsonicAccountCard { viewModel.verify(id) }
+            Spacer(Modifier.height(16.dp))
+        }
+
         LabSectionLabel("Test playback")
         LabCard(padding = 14.dp) {
             val track = playing?.let {

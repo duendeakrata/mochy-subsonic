@@ -1470,6 +1470,16 @@ interface DatabaseDao {
     @Query("DELETE FROM artist WHERE name GLOB '[0-9]*:[0-9][0-9]'")
     fun deleteTimestampArtists(): Int
 
+    // Subsonic server sync: entries are prefixed with "sub:" so a resync wipes them cleanly
+    @Query("DELETE FROM song WHERE id LIKE :prefix || '%'")
+    fun deleteSongsByPrefix(prefix: String): Int
+
+    @Query("DELETE FROM album WHERE id LIKE :prefix || '%'")
+    fun deleteAlbumsByPrefix(prefix: String): Int
+
+    @Query("DELETE FROM artist WHERE id LIKE :prefix || '%'")
+    fun deleteArtistsByPrefix(prefix: String): Int
+
     @Transaction
     fun purgeTimestampArtists(): Int {
         unlinkTimestampArtists()

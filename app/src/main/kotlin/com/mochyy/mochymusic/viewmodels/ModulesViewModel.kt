@@ -77,6 +77,18 @@ class ModulesViewModel @Inject constructor(
         }
     }
 
+    /** enables the Subsonic module once the user has saved server credentials */
+    fun enableSubsonicIfConfigured(id: String) {
+        if (id != "subsonic") return
+        val prefs = context.getSharedPreferences("module_subsonic", android.content.Context.MODE_PRIVATE)
+        if (prefs.getString("server", null)?.isNotBlank() == true &&
+            prefs.getString("user", null)?.isNotBlank() == true &&
+            prefs.getString("pass", null)?.isNotBlank() == true
+        ) {
+            modules.setEnabled(id, true)
+        }
+    }
+
     /** a header from the sign-in page; [onDone] runs once, when the account is in */
     fun onSignInHeader(id: String, name: String, value: String, url: String, onDone: (AccountState) -> Unit) {
         val module = modules.module(id) ?: return

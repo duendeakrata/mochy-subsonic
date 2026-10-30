@@ -101,7 +101,7 @@ fun SubsonicAccountCard(onChanged: () -> Unit = {}) {
                 fontFamily = InterFontFamily, fontSize = 13.sp, color = LabColors.Secondary,
             )
         } else {
-            PrimaryButton(
+            SubsonicButton(
                 text = if (p?.error != null) "Sync again" else "Sync library now",
                 onClick = { syncViewModel.startSync() },
             )

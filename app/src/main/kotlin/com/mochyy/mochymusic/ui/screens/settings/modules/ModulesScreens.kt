@@ -200,7 +200,11 @@ fun ModuleScreen(navController: NavController, id: String, viewModel: ModulesVie
 
         if (id == "subsonic") {
             LabSectionLabel("Server account")
-            SubsonicAccountCard { viewModel.enableSubsonicIfConfigured(id); viewModel.verify(id) }
+            SubsonicAccountCard { hasCreds ->
+                if (hasCreds) viewModel.enableSubsonicIfConfigured(id)
+                else viewModel.setEnabled(id, false)
+                viewModel.verify(id)
+            }
             Spacer(Modifier.height(16.dp))
         }
 

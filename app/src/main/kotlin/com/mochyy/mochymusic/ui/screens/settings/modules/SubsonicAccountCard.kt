@@ -45,7 +45,7 @@ import com.mochyy.mochymusic.ui.theme.InterFontFamily
 import com.mochyy.mochymusic.R
 
 @Composable
-fun SubsonicAccountCard(onChanged: () -> Unit = {}) {
+fun SubsonicAccountCard(onChanged: (hasCreds: Boolean) -> Unit = {}) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("module_subsonic", android.content.Context.MODE_PRIVATE) }
     var server by remember { mutableStateOf(prefs.getString("server", "") ?: "") }
@@ -62,11 +62,13 @@ fun SubsonicAccountCard(onChanged: () -> Unit = {}) {
             putString("pass", pass)
         }
         savedTick++
-        onChanged()
+        onChanged(server.isNotBlank() && user.isNotBlank() && pass.isNotBlank())
     }
 
     // refresh the toggle/account line above once saved
-    androidx.compose.runtime.LaunchedEffect(savedTick) { if (savedTick > 0) onChanged() }
+    androidx.compose.runtime.LaunchedEffect(savedTick) {
+        if (savedTick > 0) onChanged(server.isNotBlank() && user.isNotBlank() && pass.isNotBlank())
+    }
 
     LabCard(padding = 16.dp) {
         SubsonicField("Server", server, "https://music.example.com", KeyboardType.Uri, VisualTransformation.None) {
@@ -90,7 +92,8 @@ fun SubsonicAccountCard(onChanged: () -> Unit = {}) {
             LabTextAction("Forget this server", R.drawable.close) {
                 prefs.edit { clear() }
                 server = ""; user = ""; pass = ""
-                onChanged()
+                savedTick++
+                onChanged(false)
             }
         }
         Spacer(Modifier.height(10.dp))

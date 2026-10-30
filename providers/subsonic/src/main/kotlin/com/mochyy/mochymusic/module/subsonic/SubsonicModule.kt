@@ -86,11 +86,17 @@ class SubsonicModule : SourceModule {
         host.storage.set("pass", null)
     }
 
-    override suspend fun resolve(track: TrackQuery, picks: Map<String, String>): ResolveResult =
-        diagnose(track, picks) {}
+    override suspend fun resolve(track: TrackQuery, picks: Map<String, String>): ResolveResult {
+        if (api() == null) {
+            host.log("resolve skipped: no server configured")
+            return ResolveResult.Unavailable("No Subsonic server configured")
+        }
+        return diagnose(track, picks) {}
+    }
 
     override suspend fun diagnose(track: TrackQuery, picks: Map<String, String>, report: (DiagnosticStep) -> Unit): ResolveResult {
         val api = api() ?: return ResolveResult.Unavailable("No Subsonic server configured")
+        host.log("resolve '${track.title}' by ${track.artists.joinToString()}")
         report(DiagnosticStep("Find the song", null, "Searching the server…"))
         val found = runCatching {
             val q = "${track.artists.firstOrNull().orEmpty()} ${TrackMatcher.core(track.title)}".trim()
